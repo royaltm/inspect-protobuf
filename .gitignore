@@ -1,0 +1,11 @@
+.DS_Store
+Thumbs.db
+*.tmp
+*~
+*.lnk
+*.sublime-project
+*.sublime-workspace
+sftp-config.json
+/node_modules
+/tmp
+npm-debug.log

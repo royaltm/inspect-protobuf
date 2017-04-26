@@ -1,0 +1,35 @@
+{
+  "name": "inspect-protobuf",
+  "version": "1.0.0",
+  "description": "inspect or convert protobuf encoded messages to json, best served with kafkacat",
+  "main": "index.js",
+  "bin": {
+    "inspect-protobuf": "./bin/inspect-protobuf.js"
+  },
+  "scripts": {
+    "test": "tap test/test.*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/royaltm/inspect-protobuf.git"
+  },
+  "keywords": [
+    "protobuf",
+    "inspect",
+    "kafkacat"
+  ],
+  "author": "royal@yeondir.com",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/royaltm/inspect-protobuf/issues"
+  },
+  "homepage": "https://github.com/royaltm/inspect-protobuf#readme",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "protocol-buffers": "^3.2.1"
+  },
+  "devDependencies": {
+    "ben": "0.0.0",
+    "tap": "^10.3.2"
+  }
+}

@@ -1,0 +1,16 @@
+enum FOO {
+  BAR = 1;
+  BAZ = 2;
+}
+ 
+message Test {
+  required float num  = 1;
+  optional string payload = 2;
+  optional bytes ip = 3;
+  optional bytes blob = 4;
+  optional AnotherOne one = 5;
+}
+ 
+message AnotherOne {
+  repeated FOO list = 1;
+}
