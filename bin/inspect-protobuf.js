@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * TOOL inspect protobuf
+ * inspect protobuf
  *
  * Author: Rafal Michalski (c) 2017
  *

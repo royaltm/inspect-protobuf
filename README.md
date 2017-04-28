@@ -1,19 +1,19 @@
 inspect-protobuf
 ================
 
-Inspect the content of google protobuf encoded messages.
+Inspect the content of messages encoded with google protobuf.
 
 
 ### Requirements
 
-* nodejs ^0.10
+* nodejs ^4
 
 
 ### Installation
 
 
 ```
-sudo npm install -g github:royaltm/inspect-protobuf
+sudo npm install -g @royaltm/inspect-protobuf
 ```
 
 ### Usage
@@ -46,7 +46,7 @@ cat message.bin | inspect-protobuf path/to/file.proto MyMessage
 ```
 
 Alternatively set the environment variable `INSPECT_PROTOBUF="path/to/file.proto/MyMessage"`.
-In this instance you *must* append the message name as a last path component.
+In this instance you *must* append the message name as the last path component.
 
 ##### Format options
 
