@@ -54,6 +54,7 @@ no colors
 
 ```
 cat message.bin | inspect-protobuf -C
+```
 
 use external json inspector
 
