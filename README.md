@@ -33,8 +33,8 @@ Usage: inspect-protobuf [options] <proto-file> <ProtoMessageName>
     -V, --version   output the version number
     -j, --json      json output
     -C, --no-color  monochrome inspect output
+    -3, --proto-3   use protobufjs parser (proto-3 support)
 ```
-
 
 #### Arguments
 
@@ -50,15 +50,26 @@ In this instance you *must* append the message name as the last path component.
 
 ##### Format options
 
+no colors
+
 ```
-# no colors
 cat message.bin | inspect-protobuf -C
 
-# use external json inspector
+use external json inspector
+
+```
 cat message.bin | inspect-protobuf -j | jq .
 ```
 
-##### Kafkacat
+##### Protobuf options
+
+Switch to [protobufjs](https://www.npmjs.com/package/protobufjs) module for proto3 and other protobuf features that are not handled by the [protocol-buffers](https://www.npmjs.com/package/protocol-buffers) module.
+
+```
+cat message.bin | inspect-protobuf -3
+```
+
+#### Kafkacat
 
 This tool is best served with [kafkacat](https://github.com/edenhill/kafkacat).
 
