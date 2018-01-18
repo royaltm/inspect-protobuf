@@ -29,6 +29,7 @@
   "homepage": "https://github.com/royaltm/inspect-protobuf#readme",
   "dependencies": {
     "commander": "^2.13.0",
+    "long": "^3.2.0",
     "msgpack-lite": "^0.1.26",
     "protobufjs": "^6.8.4",
     "protocol-buffers": "^4.0.2"
