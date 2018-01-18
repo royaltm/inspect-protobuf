@@ -27,13 +27,18 @@ inspect-protobuf -h
 ```
 Usage: inspect-protobuf [options] <proto-file> <ProtoMessageName>
 
-  Options:
 
-    -h, --help      output usage information
-    -V, --version   output the version number
-    -j, --json      json output
-    -C, --no-color  monochrome inspect output
-    -3, --proto-3   use protobufjs parser (proto-3 support)
+Options:
+
+  -V, --version           output the version number
+  -j, --json              json output
+  -C, --no-color          monochrome inspect output
+  -3, --proto-3           use protobufjs parser (proto-3 support)
+  -I, --no-ip             do not decode 4 or 16 bytes as ip addresses
+  -e, --bytes <encoding>  decode bytes as strings with encoding
+  -m, --msgpack           decode bytes with MessagePack
+  -b, --json-bytes        decode bytes as JSON strings
+  -h, --help              output usage information
 ```
 
 #### Arguments
