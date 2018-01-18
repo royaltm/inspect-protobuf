@@ -47,7 +47,7 @@ var inspectTool
   , messageName;
  
 program
-  .version('1.1.0')
+  .version('1.2.0')
   .usage('[options] <proto-file> <ProtoMessageName>')
   .option('-j, --json', 'json output')
   .option('-C, --no-color', 'monochrome inspect output')
