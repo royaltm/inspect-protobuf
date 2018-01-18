@@ -5,7 +5,7 @@ var fs = require('fs')
 
 var test = require('tap').test;
 
-var fork = require('child_process').fork;
+var runCmd = require('./runner');
 
 var command = path.join(__dirname, '..', 'bin', 'inspect-protobuf.js');
 
@@ -29,33 +29,21 @@ var jsonInspect = '{"num":42,"payload":"money shot!","ip":"1.2.3.4","blob":"3q26
 var binMessage = Test.encode(Test.create(jsonMessage)).finish();
 
 test("inspect", function(t) {
-  t.plan(1);
-  var child = fork(command, ['-3', '-j', protoPath], { stdio: ['pipe', 'pipe', process.stderr, 'ipc'] });
+  t.plan(2);
 
-  child.stdout.on('readable', function readable() {
-    var out = child.stdout.read(jsonInspect.length);
-    if (out) {
-      child.stdout.removeListener('readable', readable);
-      t.strictEquals(out.toString(), jsonInspect);
-    }
-  });
-
-  child.stdin.end(binMessage);
+  runCmd(command, ['-3', '-j', protoPath], null, binMessage, Buffer.byteLength(jsonInspect), function(code, out) {
+    t.strictEquals(code, 0);
+    t.strictEquals(out.toString(), jsonInspect);
+  });  
 });
 
 test("inspect env", function(t) {
-  t.plan(1);
-  var child = fork(command, ['-3', '-j'], {
-    env: {INSPECT_PROTOBUF: path.join(protoPath, 'foosome.Test')},
-    stdio: ['pipe', 'pipe', process.stderr, 'ipc'] });
+  t.plan(2);
 
-  child.stdout.once('readable', function readable() {
-    var out = child.stdout.read(jsonInspect.length);
-    if (out) {
-      child.stdout.removeListener('readable', readable);
-      t.strictEquals(out.toString(), jsonInspect);
-    }
-  });
+  var env = {INSPECT_PROTOBUF: path.join(protoPath, 'foosome.Test')};
 
-  child.stdin.end(binMessage);
+  runCmd(command, ['-3', '-j', protoPath], {env: env}, binMessage, Buffer.byteLength(jsonInspect), function(code, out) {
+    t.strictEquals(code, 0);
+    t.strictEquals(out.toString(), jsonInspect);
+  });  
 });

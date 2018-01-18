@@ -23,6 +23,8 @@ var FilterBuffer = require('../lib/filter_buffer');
 
 var acquireProtobufDecoder = require('../lib/proto_impl');
 
+var installBytesInspect = require('../lib/bytes_inspect');
+
 var InspectTypes = {
   color: function(obj) {
     return inspect(obj, {depth: null, colors: true}) + "\n\n";
@@ -47,6 +49,10 @@ program
   .option('-j, --json', 'json output')
   .option('-C, --no-color', 'monochrome inspect output')
   .option('-3, --proto-3', 'use protobufjs parser (proto-3 support)')
+  .option('-I, --no-ip', 'do not decode 4 or 16 bytes as ip addresses')
+  .option('-e, --bytes <encoding>', 'decode bytes as strings using encoding', 'base64')
+  .option('-m, --msgpack', 'decode bytes as MessagePack strings')
+  .option('-b, --json-bytes', 'decode bytes as JSON strings')
   .parse(process.argv);
 
 parseArgs.apply(null, program.args);
@@ -104,14 +110,12 @@ acquireProtobufDecoder(protoVersion, protoFile, messageName, function(err, proto
     process.exit(2);
   }
 
-  /* monkey-patch Buffer#toJSON */
-  Buffer.prototype.toJSON = function() {
-    if (this.length === 4) { /* 4-byte blob, assume IP address */
-      return this[0] + '.' + this[1] + '.' + this[2] + '.' + this[3];
-    } else {
-      return this.toString('base64');
-    }
-  };
+  if (protoVersion === 3) {
+    const Long = require("long");
+    Long.prototype.toJSON = function() { return this.toString(); };
+  }
+
+  installBytesInspect(program.ip, program.bytes, program.jsonBytes, program.msgpack);
 
   var transformer = new FilterBuffer();
 
