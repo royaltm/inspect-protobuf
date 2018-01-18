@@ -111,7 +111,7 @@ acquireProtobufDecoder(protoVersion, protoFile, messageName, function(err, proto
   }
 
   if (protoVersion === 3) {
-    const Long = require("long");
+    var Long = require("long");
     Long.prototype.toJSON = function() { return this.toString(); };
   }
 
