@@ -4,7 +4,7 @@
 /*
  * inspect protobuf
  *
- * Author: Rafal Michalski (c) 2017
+ * Author: Rafal Michalski (c) 2017-2018
  *
  * Usage:
  *
@@ -23,14 +23,17 @@ var FilterBuffer = require('../lib/filter_buffer');
 
 var acquireProtobufDecoder = require('../lib/proto_impl');
 
-var installBytesInspect = require('../lib/bytes_inspect');
+var convertTypes = require('../lib/convert_types');
+
+var colorInspectOpts = {depth: null, colors: true};
+var monoInspectOpts = {depth: null, colors: false};
 
 var InspectTypes = {
   color: function(obj) {
-    return inspect(obj, {depth: null, colors: true}) + "\n\n";
+    return inspect(obj, colorInspectOpts) + "\n\n";
   },
   mono: function(obj) {
-    return inspect(obj, {depth: null, colors: false}) + "\n\n";
+    return inspect(obj, monoInspectOpts) + "\n\n";
   },
   json: function(obj) {
     return JSON.stringify(obj) + "\n";
@@ -50,8 +53,8 @@ program
   .option('-C, --no-color', 'monochrome inspect output')
   .option('-3, --proto-3', 'use protobufjs parser (proto-3 support)')
   .option('-I, --no-ip', 'do not decode 4 or 16 bytes as ip addresses')
-  .option('-e, --bytes <encoding>', 'decode bytes as strings using encoding', 'base64')
-  .option('-m, --msgpack', 'decode bytes as MessagePack strings')
+  .option('-e, --bytes <encoding>', 'decode bytes as strings with encoding')
+  .option('-m, --msgpack', 'decode bytes with MessagePack')
   .option('-b, --json-bytes', 'decode bytes as JSON strings')
   .parse(process.argv);
 
@@ -74,15 +77,19 @@ function parseArgs(file, name) {
   messageName = name;
 }
 
+protoVersion = (program.proto3 ? 3 : 2);
+
 if (program.json) {
   inspectTool = InspectTypes.json;
+
+  convertTypes.installToJson(protoVersion, program.ip, program.bytes, program.jsonBytes, program.msgpack);
 }
 else {
   inspectTool = program.color ? InspectTypes.color
                               : InspectTypes.mono
-}
 
-protoVersion = (program.proto3 ? 3 : 2);
+  convertTypes.installInspect(protoVersion, program.ip, program.bytes, program.jsonBytes, program.msgpack)
+}
 
 var c0 = '0'.charCodeAt(0)
   , c9 = '9'.charCodeAt(0)
@@ -109,13 +116,6 @@ acquireProtobufDecoder(protoVersion, protoFile, messageName, function(err, proto
     console.error('\n%s', err.message);
     process.exit(2);
   }
-
-  if (protoVersion === 3) {
-    var Long = require("long");
-    Long.prototype.toJSON = function() { return this.toString(); };
-  }
-
-  installBytesInspect(program.ip, program.bytes, program.jsonBytes, program.msgpack);
 
   var transformer = new FilterBuffer();
 

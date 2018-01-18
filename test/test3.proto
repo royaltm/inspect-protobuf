@@ -13,6 +13,7 @@ message Test {
   optional bytes ip = 3;
   optional bytes blob = 4;
   optional AnotherOne one = 5;
+  optional int64 long = 6;
 }
 
 message AnotherOne {

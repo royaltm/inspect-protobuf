@@ -11,6 +11,8 @@ var messages = require('protobufjs').parse(fs.readFileSync(protoPath)).root;
 
 var proto = messages.lookupType('foosome.Test');
 
+var Long = require('long');
+
 var counter = 0;
 var scroll = " money shot!!!";
 
@@ -25,6 +27,7 @@ function genMessage() {
       "list": [1 + (Math.random()*2|0)],
       "values": {"key": scroll}
     },
+    "long": new Long(Math.random()*0x100000000>>>0, Math.random()*0x100000000>>>0)
   };
 }
 
@@ -35,9 +38,8 @@ function forever() {
   if (total-- > 0) {
     setImmediate(function() {
       var msg = genMessage();
-      console.warn(msg);
       var blob = proto.encode(proto.create(msg)).finish();
-      // process.stdout.write(blob.length + ' ');
+      process.stdout.write(blob.length + ' ');
       process.stdout.write(blob);
       forever();
     });
