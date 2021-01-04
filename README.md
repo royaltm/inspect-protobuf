@@ -6,7 +6,7 @@ Inspect the content of messages encoded with google protobuf.
 
 ### Requirements
 
-* nodejs ^4
+* nodejs ^8
 
 
 ### Installation

@@ -28,14 +28,14 @@
   },
   "homepage": "https://github.com/royaltm/inspect-protobuf#readme",
   "dependencies": {
-    "commander": "^2.13.0",
-    "long": "^3.2.0",
+    "commander": "^6.2.1",
+    "long": "^4.0.0",
     "msgpack-lite": "^0.1.26",
-    "protobufjs": "^6.8.4",
-    "protocol-buffers": "^4.0.2"
+    "protobufjs": "^6.10.2",
+    "protocol-buffers": "^4.2.0"
   },
   "devDependencies": {
     "ben": "0.0.0",
-    "tap": "^11.0.1"
+    "tap": "^14.11.0"
   }
 }
