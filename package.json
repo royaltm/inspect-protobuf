@@ -1,6 +1,6 @@
 {
   "name": "@royaltm/inspect-protobuf",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "inspect or convert protobuf encoded messages to json, best served with kafkacat",
   "main": "index.js",
   "bin": {
