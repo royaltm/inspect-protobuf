@@ -8,4 +8,5 @@ Thumbs.db
 sftp-config.json
 /node_modules
 /tmp
+.nyc_output/
 npm-debug.log
