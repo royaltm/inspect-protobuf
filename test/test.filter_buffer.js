@@ -68,9 +68,10 @@ test("should transform accordingly", function(t) {
   sb.setEncoding('utf8');
   sb.end(new Buffer('Łódź$12*ABCDEFGHIJKLMNOPQR'));
 
-  sb.once('readable', function(data) {
-    setImmediate(function() {
-      t.strictEqual(sb.read(9), 'ALAMAKOTA');
-    });
+  sb.on('readable', function() {
+    var data = sb.read(9);
+    if (data) {
+      t.strictEqual(data, 'ALAMAKOTA');
+    }
   });
 });

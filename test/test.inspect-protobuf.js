@@ -2,6 +2,7 @@
 
 var fs = require('fs')
   , path = require('path')
+  , inspect = require('util').inspect;
 
 var test = require('tap').test;
 
@@ -18,8 +19,8 @@ var messages = require('protocol-buffers')(fs.readFileSync(protoPath));
 var jsonMessage = {
   "num": 42,
   "payload": "money shot!",
-  "ip": new Buffer([1,2,3,4]),
-  "blob": new Buffer("DEADBACABAD0", "hex"),
+  "ip": Buffer.from([1,2,3,4]),
+  "blob": Buffer.from("DEADBACABAD0", "hex"),
   "one": {
     "list": [1, 2]
   }
@@ -28,7 +29,7 @@ var jsonMessage = {
 var jsonMessageMp = {
   "num": -0.5,
   "payload": "",
-  "ip": new Buffer([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
+  "ip": Buffer.from([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
   "blob": encode({foo: "bar"}),
   "one": {
     "list": []
@@ -38,8 +39,8 @@ var jsonMessageMp = {
 var jsonMessageJSON = {
   "num": 0.5,
   "payload": "",
-  "ip": new Buffer([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
-  "blob": new Buffer(JSON.stringify({bar: "baz"}), 'utf8'),
+  "ip": Buffer.from([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
+  "blob": Buffer.from(JSON.stringify({bar: "baz"}), 'utf8'),
   "one": {
     "list": []
   }
@@ -60,20 +61,24 @@ var jsonInspectJSONNoIp = '{"num":0.5,"payload":"","ip":"AQIDBAUGBwgJCgsMDQ4PEA=
 
 var jsonInspectJSONMpNoIp = '{"num":0.5,"payload":"","ip":1,"blob":{"bar":"baz"},"one":{"list":[]}}';
 
-var nodeInspect = "{ num: 42,\n  payload: 'money shot!',\n  ip: '1.2.3.4',\n  blob: Buffer(6),\n  one: { list: [ 1, 2 ] } }";
-var nodeInspectNoIp = "{ num: 42,\n  payload: 'money shot!',\n  ip: Buffer(4),\n  blob: Buffer(6),\n  one: { list: [ 1, 2 ] } }";
-var nodeInspectHex = "{ num: 42,\n  payload: 'money shot!',\n  ip: '1.2.3.4',\n  blob: 'deadbacabad0',\n  one: { list: [ 1, 2 ] } }";
-var nodeInspectHexNoIp = "{ num: 42,\n  payload: 'money shot!',\n  ip: '01020304',\n  blob: 'deadbacabad0',\n  one: { list: [ 1, 2 ] } }";
-var nodeInspectBinary = "{ num: 42,\n  payload: 'money shot!',\n  ip: '1.2.3.4',\n  blob: '\xDE\xAD\xBA\xCA\xBA\xD0',\n  one: { list: [ 1, 2 ] } }";
-var nodeInspectBinaryNoIp = "{ num: 42,\n  payload: 'money shot!',\n  ip: '\\u0001\\u0002\\u0003\\u0004',\n  blob: '\xDE\xAD\xBA\xCA\xBA\xD0',\n  one: { list: [ 1, 2 ] } }";
+var inspectOpts = {depth: null, colors: false};
 
-var nodeInspectMp = "{ num: -0.5,\n  payload: '',\n  ip: '0102030405060708090a0b0c0d0e0f10',\n  blob: { foo: 'bar' },\n  one: { list: [] } }";
-var nodeInspectMpNoIp = "{ num: -0.5,\n  payload: '',\n  ip: 1,\n  blob: { foo: 'bar' },\n  one: { list: [] } }";
+var nodeInspect = inspect({ num: 42, payload: 'money shot!', ip: '1.2.3.4', blob: Buffer.alloc(6), one: { list: [ 1, 2 ] } }, inspectOpts)
+                  .replace('<Buffer 00 00 00 00 00 00>', 'Buffer(6)');
+var nodeInspectNoIp = inspect({ num: 42, payload: 'money shot!', ip: Buffer.alloc(4), blob: Buffer.alloc(6), one: { list: [ 1, 2 ] } }, inspectOpts)
+                  .replace('<Buffer 00 00 00 00 00 00>', 'Buffer(6)').replace('<Buffer 00 00 00 00>', 'Buffer(4)');
+var nodeInspectHex = inspect({ num: 42, payload: 'money shot!', ip: '1.2.3.4', blob: 'deadbacabad0', one: { list: [ 1, 2 ] } }, inspectOpts);
+var nodeInspectHexNoIp = inspect({ num: 42, payload: 'money shot!', ip: '01020304', blob: 'deadbacabad0', one: { list: [ 1, 2 ] } }, inspectOpts);
+var nodeInspectBinary = inspect({ num: 42, payload: 'money shot!', ip: '1.2.3.4', blob: '\xDE\xAD\xBA\xCA\xBA\xD0', one: { list: [ 1, 2 ] } }, inspectOpts);
+var nodeInspectBinaryNoIp = inspect({ num: 42, payload: 'money shot!', ip: '\x01\x02\x03\x04', blob: '\xDE\xAD\xBA\xCA\xBA\xD0', one: { list: [ 1, 2 ] } }, inspectOpts);
 
-var nodeInspectJSON = "{ num: 0.5,\n  payload: '',\n  ip: '0102030405060708090a0b0c0d0e0f10',\n  blob: { bar: 'baz' },\n  one: { list: [] } }";
-var nodeInspectJSONNoIp = "{ num: 0.5,\n  payload: '',\n  ip: 'AQIDBAUGBwgJCgsMDQ4PEA==',\n  blob: { bar: 'baz' },\n  one: { list: [] } }";
+var nodeInspectMp = inspect({ num: -0.5, payload: '', ip: '0102030405060708090a0b0c0d0e0f10', blob: { foo: 'bar' }, one: { list: [] } }, inspectOpts);
+var nodeInspectMpNoIp = inspect({ num: -0.5, payload: '', ip: 1, blob: { foo: 'bar' }, one: { list: [] } }, inspectOpts);
 
-var nodeInspectJSONMpNoIp = "{ num: 0.5,\n  payload: '',\n  ip: 1,\n  blob: { bar: 'baz' },\n  one: { list: [] } }";
+var nodeInspectJSON = inspect({ num: 0.5, payload: '', ip: '0102030405060708090a0b0c0d0e0f10', blob: { bar: 'baz' }, one: { list: [] } }, inspectOpts);
+var nodeInspectJSONNoIp = inspect({ num: 0.5, payload: '', ip: 'AQIDBAUGBwgJCgsMDQ4PEA==', blob: { bar: 'baz' }, one: { list: [] } }, inspectOpts);
+
+var nodeInspectJSONMpNoIp = inspect({ num: 0.5, payload: '', ip: 1, blob: { bar: 'baz' }, one: { list: [] } }, inspectOpts);
 
 var binMessage = messages.Test.encode(jsonMessage);
 var binMessageMp = messages.Test.encode(jsonMessageMp);
